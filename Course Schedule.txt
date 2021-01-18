@@ -1,0 +1,50 @@
+Q.There are a total of numCourses courses you have to take, labeled from 0 to numCourses-1.
+
+Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
+
+Given the total number of courses and a list of prerequisite pairs, is it possible for you to finish all courses?
+
+sol:
+  class Solution {
+    public ArrayList<ArrayList<Integer>> adj;
+    public boolean visited[];
+    public int recstack[];
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        visited=new boolean[numCourses];
+        recstack=new int[numCourses];
+        adj=new ArrayList<ArrayList<Integer>>();
+        for(int i=0;i<numCourses;i++){
+            adj.add(new ArrayList<Integer>());
+        }
+        for(int i=0;i<prerequisites.length;i++){
+            adj.get(prerequisites[i][1]).add(prerequisites[i][0]);
+        }
+        System.out.print(adj);
+        for(int i=0;i<numCourses;i++){
+            if(dfs(i,adj)){
+                return false;
+            }
+        }
+        return true;
+    }
+    public boolean dfs(int source,ArrayList<ArrayList<Integer>> adj){
+        visited[source]=true;
+        recstack[source]=1;
+        for(Integer neighbour:adj.get(source)){
+            if(recstack[neighbour]==1){
+                return true;
+            }
+            if(!visited[neighbour]){
+                if(dfs(neighbour,adj)){
+                    return true;
+                }
+            }
+        }
+        recstack[source]=0;
+        return false;
+    }
+  }
+
+Sample Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+
+Sample output: false
